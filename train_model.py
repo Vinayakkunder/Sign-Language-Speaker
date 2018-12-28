@@ -19,3 +19,16 @@ classifier.add(MaxPooling2D(pool_size =(2,2)))
 #CNN Layer- 3
 classifier.add(Convolution2D(64, 3,  3, activation = 'relu'))
 classifier.add(MaxPooling2D(pool_size =(2,2)))
+
+#Flatten the CNN Layers(Flattening)
+classifier.add(flatten())
+
+#Full Connection
+classifier.add(Dense(256, activation = 'relu'))
+classifier.add(Dropout(0.5))
+classifier.add(Dense(5, activation = 'softmax'))
+
+#Compile the CNN
+classifier.compile(optimizer = optimizers.SGD(lr = 0.01),
+              loss = 'categorical_crossentropy',
+              metrics = ['accuracy'])
