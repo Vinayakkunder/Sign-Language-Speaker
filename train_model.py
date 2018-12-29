@@ -4,6 +4,8 @@ from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 from keras.layers import Dense, Dropout
 from keras import optimizers
+import matplotlib.pyplot as plt
+import h5py
 
 #initialize cnn
 classifier = Sequential()
@@ -62,3 +64,26 @@ model = classifier.fit_generator(
         validation_data = test_set,
         validation_steps = 6500
       )
+
+
+#Saving the trained model
+classifier.save('Trained_model.h5')
+print(model.history.keys())
+
+#trace our model's accuracy
+plt.plot(model.history['acc'])
+plt.plot(model.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+
+plt.plot(model.history['loss'])
+plt.plot(model.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
