@@ -1,3 +1,5 @@
+''' This program is to detect and predict the gesture '''
+
 import cv2
 import numpy as np
 
