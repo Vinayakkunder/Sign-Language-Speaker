@@ -23,7 +23,7 @@ classifier.add(Convolution2D(64, 3,  3, activation = 'relu'))
 classifier.add(MaxPooling2D(pool_size =(2,2)))
 
 #Flatten the CNN Layers(Flattening)
-classifier.add(flatten())
+classifier.add(Flatten())
 
 #Full Connection
 classifier.add(Dense(256, activation = 'relu'))
