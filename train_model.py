@@ -28,7 +28,7 @@ classifier.add(Flatten())
 #Full Connection
 classifier.add(Dense(256, activation = 'relu'))
 classifier.add(Dropout(0.5))
-classifier.add(Dense(5, activation = 'softmax'))
+classifier.add(Dense(26, activation = 'softmax'))
 
 #Compile the CNN
 classifier.compile(optimizer = optimizers.SGD(lr = 0.01),
@@ -60,7 +60,7 @@ test_set = test_datagen.flow_from_directory(
 model = classifier.fit_generator(
         training_set,
         steps_per_epoch=200,
-        epochs=8,
+        epochs=20,
         validation_data = test_set,
         validation_steps = 6500
       )
