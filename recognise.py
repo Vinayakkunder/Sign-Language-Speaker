@@ -1,11 +1,8 @@
 import cv2
 import numpy as np
-
 import pyttsx3
-import os
 import time
 import threading
-
 
 def nothing(x):
     pass
@@ -14,6 +11,18 @@ image_x, image_y = 64,64
 
 from keras.models import load_model
 classifier = load_model('Trained_model.h5')
+tts = pyttsx3.init()
+img_text = ''
+def speaker():
+    voices = tts.getProperty('voices')
+    rate = tts.getProperty('rate')
+    tts.setProperty('rate', rate+20)
+    tts.setProperty('voice', voices[1].id)
+    global img_text
+    tts.say(img_text)
+    tts.runAndWait()
+    
+curr_T = None
 
 
 def predictor():
@@ -24,27 +33,31 @@ def predictor():
        test_image = np.expand_dims(test_image, axis = 0)
        result = classifier.predict(test_image)
        
+       global img_text
+       
        if result[0][0] == 1:
-           time.sleep(1)
-           #engine.say('Hello')
-           return 'Hello'
+              return 'None'
+            
        elif result[0][1] == 1:
-           time.sleep(1)
-           #engine.say('This')
-           return 'This'
+           #img_text='I am V.k.'
+           return 'I am V.k.'
        elif result[0][2] == 1:
-           time.sleep(1)
-           #engine.say('none')
-           return ''
+           #img_text='Whats up'
+           return 'Whats up'
        elif result[0][3] == 1:
-           time.sleep(1)
-           #engine.say('is')
-           return 'Is'
-       elif result[0][4] == 1:
-           time.sleep(1)
-           #engine.say('Python')
-           return 'Python'
-  
+           #img_text='I am Hungry'
+           return 'I am Hungry'
+       '''elif result[0][4] == 1:
+           return 'ML' '''
+       
+        
+       global curr_T
+       if curr_T == None:
+           curr_T = threading.Thread(target=speaker, args=())
+           curr_T.start()
+       elif curr_T.isAlive() == False:
+           curr_T = threading.Thread(target=speaker, args=())
+           curr_T.start()
 
        
 
@@ -63,7 +76,7 @@ cv2.namedWindow("test")
 
 img_counter = 0
 
-img_text = ''
+
 while True:
     ret, frame = cam.read()
     frame = cv2.flip(frame,1)
@@ -75,48 +88,26 @@ while True:
     u_v = cv2.getTrackbarPos("U - V", "Trackbars")
 
 
-    img = cv2.rectangle(frame, (425,100),(625,300), (0,255,0), thickness=2, lineType=8, shift=0)
+    #img = cv2.rectangle(frame, (425,100),(625,300), (0,255,0), thickness=2, lineType=8, shift=0)
 
     lower_blue = np.array([l_h, l_s, l_v])
     upper_blue = np.array([u_h, u_s, u_v])
-    imcrop = img[102:298, 427:623]
-    hsv = cv2.cvtColor(imcrop, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv,lower_blue, upper_blue)
+    #imcrop = img[102:298, 427:623]
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
     
     cv2.putText(frame, img_text, (30, 400), cv2.FONT_HERSHEY_TRIPLEX, 1.5, (0, 255, 0))
     cv2.imshow("test", frame)
     cv2.imshow("mask", mask)
     
     #if cv2.waitKey(1) == ord('c'):
-    
+        
     img_name = "1.png"
-    save_img = cv2.resize(mask, (image_x, image_y))
+    #save_img = cv2.resize(mask, (image_x, image_y))
+    save_img = cv2.resize(mask,None,fx=0.1,fy=0.1, interpolation=cv2.INTER_CUBIC)
     cv2.imwrite(img_name, save_img)
     print("{} written!".format(img_name))
-    #assigning predictor to a variable and defining speak function
     img_text = predictor()
-    def speaker(img_text):
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        rate = engine.getProperty('rate')
-        engine.setProperty('rate', rate-50)
-        engine.setProperty('voice', voices[1].id)
-        engine.say(img_text)
-        time.sleep(1)
-    #speaker(img_text)
-
-    #using multithreading between predictor function and speaker function
-    
-    t = time.time()
-    t1 = threading.Thread(target=predictor, args=() )
-    t2 = threading.Thread(target=speaker, args=(img_text))
-    
-    t1.start()
-    t2.start()
-    
-    t1.join()
-    t2.join()
-
     
     
         
