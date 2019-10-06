@@ -2,13 +2,10 @@ import cv2
 import numpy as np
 import pyttsx3
 import time
-<<<<<<< HEAD
 import threading
-
-=======
 import os
 from threading import Thread
->>>>>>> f4e6d5685a06785f980be80b61d816a82c0c2d38
+
 def nothing(x):
     pass
 
@@ -45,7 +42,7 @@ def predictor():
        test_image = image.img_to_array(test_image)
        test_image = np.expand_dims(test_image, axis = 0)
        result = classifier.predict(test_image)
-<<<<<<< HEAD
+
        
        global img_text
        
@@ -73,7 +70,7 @@ def predictor():
            curr_T = threading.Thread(target=speaker, args=())
            curr_T.start()
 
-=======
+
        engine = pyttsx3.init()
        voices = engine.getProperty('voices')
        rate = engine.getProperty('rate')
@@ -141,7 +138,7 @@ def predictor():
        elif result[0][25] == 1:
            return 'Z'
       
->>>>>>> f4e6d5685a06785f980be80b61d816a82c0c2d38
+
        
 
 cam = cv2.VideoCapture(0)
@@ -159,12 +156,9 @@ cv2.namedWindow("test")
 
 img_counter = 0
 
-<<<<<<< HEAD
-
-=======
 img_text = ''
 import time 
->>>>>>> f4e6d5685a06785f980be80b61d816a82c0c2d38
+
 while True:
     ret, frame = cam.read()
     frame = cv2.flip(frame,1)
@@ -180,13 +174,13 @@ while True:
 
     lower_blue = np.array([l_h, l_s, l_v])
     upper_blue = np.array([u_h, u_s, u_v])
-<<<<<<< HEAD
+
     #imcrop = img[102:298, 427:623]
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-=======
+
     imcrop = img[102:298, 427:623]
     hsv = cv2.cvtColor(imcrop, cv2.COLOR_BGR2HSV)
->>>>>>> f4e6d5685a06785f980be80b61d816a82c0c2d38
+
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
     
     cv2.putText(frame, img_text, (30, 400), cv2.FONT_HERSHEY_TRIPLEX, 1.5, (0, 255, 0))
@@ -200,14 +194,7 @@ while True:
     save_img = cv2.resize(mask,None,fx=0.1,fy=0.1, interpolation=cv2.INTER_CUBIC)
     cv2.imwrite(img_name, save_img)
     print("{} written!".format(img_name))
-    img_text = predictor()
-<<<<<<< HEAD
-=======
-
->>>>>>> f4e6d5685a06785f980be80b61d816a82c0c2d38
-    
-    
-        
+    img_text = predictor()     
 
     if cv2.waitKey(1) == 27:
         break
